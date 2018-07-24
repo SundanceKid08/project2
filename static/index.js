@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Connect to websocket
     const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     const request = new XMLHttpRequest()
-
     onLoad(request)
 
     if (localStorage.getItem('username') != 'null')
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //when new chatroom name submitted emit to 'add channel' new channel name
     document.querySelector('#add_channel_form').onsubmit = () => {
         var name = document.querySelector('#chatroom_name').value
-        localStorage.setItem('current_chatroom', name)
         socket.emit('add channel', {'name': name});
         return false;
     };
@@ -50,7 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         var chat_room = document.querySelector('#chat_list').value
         alert("chatroom changed to: " + chat_room)
         localStorage.setItem('current_chatroom', chat_room)
-        socket.emit('change room', {'chat_room': chat_room})
+        var list = document.getElementById('message_list')
+        while (list.firstChild) {
+            list.removeChild(list.firstChild)
+        }
+        console.log("chat room to be loaded = " + chat_room)
+        loadMessages(request, chat_room)
         return false;
     }
 
@@ -112,6 +115,12 @@ function writeChannel(name) {
     document.getElementById('chat_list').appendChild(li);
 }
 
+function writeMessages(message) {
+    let li = document.createElement('li');
+    li.innerHTML = message;
+    document.getElementById('message_list').appendChild(li);
+}
+
 function onLoad(request) {
     request.open('POST', '/chat_rooms')
 
@@ -119,19 +128,27 @@ function onLoad(request) {
         const data = JSON.parse(request.responseText)
         for(var x in data)
             writeChannel(x)
+        var myChannel = localStorage.getItem("current_chatroom")
+        loadMessages(request, myChannel)
     }
     request.send()
 }
 
-function loadMessages(request) {
+function loadMessages(request, channel_name) {
     request.open('POST', '/chat_log')
 
     request.onload = () => {
-        const data = JSON.parse(request.responseText)
-        for(var x in data)
-            writeChannel(x)
+        var channel = JSON.parse(request.responseText)
+        //console.log("name returned = " + channel)
+        for(var x in channel)
+            //console.log("x = " + x)
+            if(channel[x])
+                writeMessages(channel[x])
     }
-    request.send()
+
+    const data = new FormData();
+    data.append('name', channel_name)
+    request.send(data)
 }
 
 

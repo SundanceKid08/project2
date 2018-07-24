@@ -14,10 +14,6 @@ channels = {}
 users = {}
 success = {'success': True}
 
-def Merge(dict1, dict2):
-    res = {**dict1, **dict2}
-    return res
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -32,7 +28,10 @@ def loadChatRooms():
 
 @app.route("/chat_log", methods=["POST"])
 def loadChatLog():
-    return jsonify(channels)
+    channel_name = request.form.get("name")
+    print(channel_name, file=sys.stderr)
+    print(channels[channel_name], file=sys.stderr)
+    return jsonify(channels[channel_name])
 
 
 @socketio.on("add channel")
@@ -47,7 +46,6 @@ def addUser(data):
     username = data["username"]
     if(username not in users):
         users[username] = {}
-        emit("announce user", {"username": username}, broadcast = True)
 
 @socketio.on("add message")
 def addMessage(data):
