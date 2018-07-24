@@ -1,0 +1,44 @@
+.jumbotron.myJumbo {
+    color: blue;
+    background-color: red ;
+}
+
+.col-6.chat_area {
+    border: 1px solid black;
+    width: 75%;
+    height: 700px;
+    max-width: 800px;
+}
+
+.col-3.user_window {
+    border: 1px solid red;
+     max-width: 300px;
+}
+
+.col-3.room_list {
+    border: 1px solid blue;
+    max-width: 300px;
+}
+
+html, body {
+    height: 100%;
+    border: 1px solid green;
+}
+
+.user_form {
+    margin-left: 45px;
+}
+
+.chat_input_area {
+    margin-left: 45px;
+    width: 500px;
+}
+
+.chat_message_box {
+    width: 75%;
+}
+
+.custom-select {
+    width: 90%;
+    height: 100%;
+}
