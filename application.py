@@ -30,6 +30,10 @@ def populate():
 def loadChatRooms():
     return jsonify(channels)
 
+@app.route("/chat_log", methods=["POST"])
+def loadChatLog():
+    return jsonify(channels)
+
 
 @socketio.on("add channel")
 def addChannel(data):
